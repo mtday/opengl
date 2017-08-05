@@ -46,8 +46,8 @@ public class Texture {
                 GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, width, height, 0, GL11.GL_RGBA,
                         GL11.GL_UNSIGNED_BYTE, buffer);
             } else {
-                GL11.glTexImage2D(
-                        GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB8, width, height, 0, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, buffer);
+                GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB8, width, height, 0, GL11.GL_RGB,
+                        GL11.GL_UNSIGNED_BYTE, buffer);
             }
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
             GL11.glDeleteTextures(id);

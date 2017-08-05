@@ -7,7 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-public class TextureManager implements AutoCloseable {
+public class TextureManager {
     @Nonnull
     private final Map<TextureType, Texture> textures;
 
@@ -19,9 +19,5 @@ public class TextureManager implements AutoCloseable {
     @Nonnull
     public Texture getTexture(@Nonnull final TextureType textureType) {
         return textures.get(textureType);
-    }
-
-    @Override
-    public void close() {
     }
 }

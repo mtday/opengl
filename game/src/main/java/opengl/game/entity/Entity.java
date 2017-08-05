@@ -1,9 +1,6 @@
 package opengl.game.entity;
 
-import static opengl.game.uniform.UniformType.TRANSFORMATION_MATRIX;
-
 import opengl.game.model.Model;
-import opengl.game.shader.Program;
 import org.joml.Matrix4f;
 
 import java.io.Closeable;
@@ -16,11 +13,8 @@ public class Entity implements Closeable {
     @Nonnull
     private final Matrix4f transformation;
 
-    public Entity(@Nonnull final Model model) {
-        this(model, new Matrix4f().identity().scale(1f));
-    }
-
-    public Entity(@Nonnull final Model model, @Nonnull final Matrix4f transformation) {
+    public Entity(
+            @Nonnull final Model model, @Nonnull final Matrix4f transformation) {
         this.model = model;
         this.transformation = transformation;
     }
@@ -39,8 +33,7 @@ public class Entity implements Closeable {
         model.bind();
     }
 
-    public void render(@Nonnull final Program program) {
-        program.getUniform(TRANSFORMATION_MATRIX).load(transformation);
+    public void render() {
         model.render();
     }
 

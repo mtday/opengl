@@ -71,6 +71,14 @@ public class Window implements AutoCloseable {
         clear();
     }
 
+    public int getWidth() {
+        return WIDTH;
+    }
+
+    public int getHeight() {
+        return HEIGHT;
+    }
+
     public boolean shouldClose() {
         return GLFW.glfwWindowShouldClose(windowHandle);
     }

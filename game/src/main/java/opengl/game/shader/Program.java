@@ -3,8 +3,7 @@ package opengl.game.shader;
 import static java.util.Optional.ofNullable;
 
 import opengl.game.model.AttributeType;
-import opengl.game.uniform.Uniform;
-import opengl.game.uniform.UniformType;
+import opengl.game.uniform.UniformManager;
 import org.lwjgl.opengl.GL20;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,12 +22,13 @@ public abstract class Program implements AutoCloseable {
     private final Map<ShaderType, Shader> shaders;
     @Nonnull
     private final List<AttributeType> attributeTypes;
+
     @Nonnull
-    private final Map<UniformType, Uniform> uniforms;
+    private final UniformManager uniformManager;
 
     public Program(
-            @Nonnull final List<ShaderType> shaderTypes, @Nonnull final List<AttributeType> attributeTypes,
-            @Nonnull final List<UniformType> uniformTypes) {
+            @Nonnull final Projection projection, @Nonnull final Camera camera,
+            @Nonnull final List<ShaderType> shaderTypes, @Nonnull final List<AttributeType> attributeTypes) {
         id = GL20.glCreateProgram();
 
         this.shaders = new HashMap<>();
@@ -37,14 +37,12 @@ public abstract class Program implements AutoCloseable {
 
         this.attributeTypes = attributeTypes;
         attributeTypes.forEach(attributeType ->
-            GL20.glBindAttribLocation(id, attributeType.getIndex(), attributeType.getVariableName()));
+                GL20.glBindAttribLocation(id, attributeType.getIndex(), attributeType.getVariableName()));
 
         GL20.glLinkProgram(id);
         GL20.glValidateProgram(id);
 
-        uniforms = new HashMap<>();
-        uniformTypes.stream().map(type -> new Uniform(id, type))
-                .forEach(uniform -> uniforms.put(uniform.getUniformType(), uniform));
+        uniformManager = new UniformManager(id, projection, camera);
     }
 
     public int getId() {
@@ -68,18 +66,13 @@ public abstract class Program implements AutoCloseable {
     }
 
     @Nonnull
-    public Map<UniformType, Uniform> getUniforms() {
-        return uniforms;
-    }
-
-    @Nonnull
-    public Uniform getUniform(@Nonnull final UniformType uniformType) {
-        return ofNullable(uniforms.get(uniformType))
-                .orElseThrow(() -> new IllegalArgumentException("Uniform type not found: " + uniformType));
+    public UniformManager getUniformManager() {
+        return uniformManager;
     }
 
     public void start() {
         GL20.glUseProgram(id);
+        uniformManager.loadViewMatrix();
     }
 
     public void stop() {
@@ -89,7 +82,6 @@ public abstract class Program implements AutoCloseable {
     @Override
     public void close() {
         shaders.values().forEach(Shader::close);
-        uniforms.values().forEach(Uniform::close);
         GL20.glDeleteProgram(id);
     }
 }

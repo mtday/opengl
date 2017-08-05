@@ -3,7 +3,9 @@ package opengl.game.uniform;
 import javax.annotation.Nonnull;
 
 public enum UniformType {
-    TRANSFORMATION_MATRIX("transformationMatrix");
+    TRANSFORMATION_MATRIX("transformationMatrix"),
+    PROJECTION_MATRIX("projectionMatrix"),
+    VIEW_MATRIX("viewMatrix");
 
     @Nonnull
     private final String variableName;
