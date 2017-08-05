@@ -21,6 +21,8 @@ public final class Model implements Closeable {
 
     private final int id;
     @Nonnull
+    private final ModelType modelType;
+    @Nonnull
     private final IndexBuffer indexBuffer;
     @Nonnull
     private final Map<AttributeType, AttributeBuffer> attributeBuffers;
@@ -29,8 +31,9 @@ public final class Model implements Closeable {
     private final Texture texture;
 
     private Model(
-            @Nonnull final IndexBuffer indexBuffer, @Nonnull final Map<AttributeType, AttributeBuffer> attributeBuffers,
-            @Nullable final Texture texture) {
+            @Nonnull final ModelType modelType, @Nonnull final IndexBuffer indexBuffer,
+            @Nonnull final Map<AttributeType, AttributeBuffer> attributeBuffers, @Nullable final Texture texture) {
+        this.modelType = modelType;
         this.indexBuffer = indexBuffer;
         this.attributeBuffers = attributeBuffers;
         this.texture = texture;
@@ -53,6 +56,11 @@ public final class Model implements Closeable {
         }
         GL11.glDrawElements(GL11.GL_TRIANGLES, indexBuffer.getCount(), GL11.GL_UNSIGNED_INT, 0);
         attributeBuffers.keySet().forEach(attributeType -> GL20.glDisableVertexAttribArray(attributeType.getIndex()));
+    }
+
+    @Nonnull
+    public ModelType getModelType() {
+        return modelType;
     }
 
     @Nonnull
@@ -80,11 +88,19 @@ public final class Model implements Closeable {
 
     public static class Builder {
         @Nullable
+        private ModelType modelType;
+        @Nullable
         private IndexBuffer indexBuffer;
         @Nonnull
         private final Map<AttributeType, AttributeBuffer> attributeBuffers = new HashMap<>();
         @Nullable
         private Texture texture;
+
+        @Nonnull
+        public Builder withModelType(@Nonnull final ModelType modelType) {
+            this.modelType = modelType;
+            return this;
+        }
 
         @Nonnull
         public Builder withIndexBuffer(@Nonnull final IndexBuffer indexBuffer) {
@@ -106,8 +122,9 @@ public final class Model implements Closeable {
 
         @Nonnull
         public Model build() {
+            requireNonNull(modelType, "A model type must be provided.");
             requireNonNull(indexBuffer, "An index buffer must be provided.");
-            return new Model(indexBuffer, attributeBuffers, texture);
+            return new Model(modelType, indexBuffer, attributeBuffers, texture);
         }
     }
 }

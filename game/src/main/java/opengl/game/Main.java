@@ -3,15 +3,18 @@ package opengl.game;
 import static opengl.game.model.AttributeType.TEXTURE;
 import static opengl.game.model.AttributeType.VERTEX;
 
+import opengl.game.entity.Entity;
 import opengl.game.model.AttributeBuffer;
 import opengl.game.model.IndexBuffer;
 import opengl.game.model.Model;
+import opengl.game.model.ModelType;
 import opengl.game.shader.Program;
 import opengl.game.shader.ProgramStatic;
 import opengl.game.texture.TextureManager;
 import opengl.game.texture.TextureType;
 import opengl.game.ui.KeyCallback;
 import opengl.game.ui.Window;
+import org.joml.Matrix4f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,25 +35,28 @@ public class Main {
             final float[] vertices = new float[] {-0.5f, 0.5f, 0f, -0.5f, -0.5f, 0f, 0.5f, -0.5f, 0f, 0.5f, 0.5f, 0f};
             final float[] textures = new float[] {0, 0, 0, 1, 1, 1, 1, 0};
 
-            final Model model = new Model.Builder().withIndexBuffer(new IndexBuffer(indices))
+            final Model model = new Model.Builder()
+                    .withModelType(ModelType.TYPE)
+                    .withIndexBuffer(new IndexBuffer(indices))
                     .withAttributeBuffer(new AttributeBuffer(VERTEX, vertices))
                     .withAttributeBuffer(new AttributeBuffer(TEXTURE, textures))
                     .withTexture(textureManager.getTexture(TextureType.TEXTURE)).build();
+
+            final Entity entity = new Entity(model, new Matrix4f().identity().translate(0f, 0f, 0f));
 
             new GameLoop().run(now -> {
                 window.clear();
                 programStatic.start();
 
-                model.bind();
-                model.render();
+                entity.bind();
+                entity.render(programStatic);
 
                 programStatic.stop();
-
                 window.update();
                 return !window.shouldClose();
             });
 
-            model.close();
+            entity.close();
         }
     }
 
@@ -58,35 +64,3 @@ public class Main {
         Main.run();
     }
 }
-
-/*
-final int vaoid = GL30.glGenVertexArrays();
-final int vertexid = GL15.glGenBuffers();
-final int indexid = GL15.glGenBuffers();
-try {
-    GL30.glBindVertexArray(vaoid);
-
-    GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indexid);
-    GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, indices, GL15.GL_STATIC_DRAW);
-    GL20.glVertexAttribPointer(INDEX.getIndex(), 1, GL11.GL_UNSIGNED_INT, false, 0, 0); // TODO: 1?
-
-    GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vertexid);
-    GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertices, GL15.GL_STATIC_DRAW);
-    GL20.glVertexAttribPointer(VERTEX.getIndex(), 3, GL11.GL_FLOAT, false, 0, 0);
-    GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-
-    GL20.glEnableVertexAttribArray(VERTEX.getIndex());
-
-    programStatic.start();
-    GL11.glDrawElements(GL11.GL_TRIANGLES, 6, GL11.GL_UNSIGNED_INT, 0);
-    programStatic.stop();
-
-    GL20.glDisableVertexAttribArray(VERTEX.getIndex());
-
-    GL30.glBindVertexArray(0);
-} finally {
-    GL15.glDeleteBuffers(vertexid);
-    GL15.glDeleteBuffers(indexid);
-    GL30.glDeleteVertexArrays(vaoid);
-}
-*/

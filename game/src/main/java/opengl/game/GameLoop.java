@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
 public class GameLoop {
     private static final Logger LOGGER = LoggerFactory.getLogger(GameLoop.class);
 
-    private static final double TARGET_FPS = 60;
+    private static final double TARGET_FPS = 1;
     private static final double TARGET_TIME = 1_000_000_000 / TARGET_FPS;
 
     public void run(@Nonnull final Function<Long, Boolean> function) {
