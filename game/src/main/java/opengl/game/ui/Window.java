@@ -68,6 +68,9 @@ public class Window implements AutoCloseable {
         // GLCapabilities instance and makes the OpenGL bindings available for use.
         GL.createCapabilities();
 
+        GL11.glEnable(GL11.GL_CULL_FACE);
+        GL11.glCullFace(GL11.GL_BACK);
+
         clear();
     }
 
