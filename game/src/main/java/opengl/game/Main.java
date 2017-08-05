@@ -26,10 +26,10 @@ public class Main {
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
     public static void run() {
-        final KeyCallback keyCallback = new KeyCallback();
+        final Camera camera = new Camera();
+        final KeyCallback keyCallback = new KeyCallback(camera);
         final Window window = new Window(keyCallback);
 
-        final Camera camera = new Camera();
         final Projection projection = new Projection(window.getWidth(), window.getHeight());
         final Program programStatic = new ProgramStatic(projection, camera);
         final TextureManager textureManager = new TextureManager();
@@ -51,7 +51,6 @@ public class Main {
             window.clear();
             programStatic.start();
 
-            entity.getTransformation().translate(0, 0, -0.1f);
             programStatic.getUniformManager().loadTransformationMatrix(entity);
 
             entity.bind();
