@@ -5,7 +5,10 @@ import javax.annotation.Nonnull;
 public enum UniformType {
     TRANSFORMATION_MATRIX("transformationMatrix"),
     PROJECTION_MATRIX("projectionMatrix"),
-    VIEW_MATRIX("viewMatrix");
+    VIEW_MATRIX("viewMatrix"),
+    LIGHT_POSITION("lightPosition"),
+    LIGHT_COLOR("lightColor"),
+    ;
 
     @Nonnull
     private final String variableName;

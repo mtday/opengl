@@ -27,7 +27,7 @@ public abstract class Program implements AutoCloseable {
     private final UniformManager uniformManager;
 
     public Program(
-            @Nonnull final Projection projection, @Nonnull final Camera camera,
+            @Nonnull final Projection projection, @Nonnull final Camera camera, @Nonnull final Light light,
             @Nonnull final List<ShaderType> shaderTypes, @Nonnull final List<AttributeType> attributeTypes) {
         id = GL20.glCreateProgram();
 
@@ -42,7 +42,7 @@ public abstract class Program implements AutoCloseable {
         GL20.glLinkProgram(id);
         GL20.glValidateProgram(id);
 
-        uniformManager = new UniformManager(id, projection, camera);
+        uniformManager = new UniformManager(id, projection, camera, light);
     }
 
     public int getId() {
@@ -72,7 +72,10 @@ public abstract class Program implements AutoCloseable {
 
     public void start() {
         GL20.glUseProgram(id);
+
         uniformManager.loadViewMatrix();
+        uniformManager.loadLightPosition();
+        uniformManager.loadLightColor();
     }
 
     public void stop() {
