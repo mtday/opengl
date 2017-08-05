@@ -11,6 +11,8 @@ import javax.annotation.Nonnull;
 public class KeyCallback implements GLFWKeyCallbackI {
     private static final Logger LOGGER = LoggerFactory.getLogger(KeyCallback.class);
 
+    private static final float MOVEMENT_DELTA = 1f;
+
     @Nonnull
     private final Camera camera;
 
@@ -22,13 +24,13 @@ public class KeyCallback implements GLFWKeyCallbackI {
     public void invoke(final long windowHandle, final int key, final int scanCode, final int action, final int modes) {
         if (action != GLFW.GLFW_RELEASE) {
             if (key == GLFW.GLFW_KEY_W) {
-                camera.getPosition().add(0, 0, -0.02f);
+                camera.getPosition().add(0, 0, -MOVEMENT_DELTA);
             } else if (key == GLFW.GLFW_KEY_S) {
-                camera.getPosition().add(0, 0, 0.02f);
+                camera.getPosition().add(0, 0, MOVEMENT_DELTA);
             } else if (key == GLFW.GLFW_KEY_A) {
-                camera.getPosition().add(-0.02f, 0, 0);
+                camera.getPosition().add(-MOVEMENT_DELTA, 0, 0);
             } else if (key == GLFW.GLFW_KEY_D) {
-                camera.getPosition().add(0.02f, 0, 0);
+                camera.getPosition().add(MOVEMENT_DELTA, 0, 0);
             }
         } else if (key == GLFW.GLFW_KEY_ESCAPE) {
             GLFW.glfwSetWindowShouldClose(windowHandle, true);

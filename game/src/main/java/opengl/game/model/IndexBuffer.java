@@ -2,6 +2,8 @@ package opengl.game.model;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL15;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.nio.IntBuffer;
@@ -9,6 +11,8 @@ import java.nio.IntBuffer;
 import javax.annotation.Nonnull;
 
 public class IndexBuffer implements Closeable {
+    private static final Logger LOGGER = LoggerFactory.getLogger(IndexBuffer.class);
+
     private final int id;
     @Nonnull
     private final IntBuffer buffer;
@@ -16,7 +20,7 @@ public class IndexBuffer implements Closeable {
 
     public IndexBuffer(@Nonnull final IntBuffer buffer) {
         this.buffer = buffer;
-        this.count = buffer.remaining();
+        count = buffer.remaining();
         id = GL15.glGenBuffers();
     }
 

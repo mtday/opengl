@@ -2,6 +2,7 @@
 
 in vec3 position;
 in vec2 texture;
+in vec2 normal;
 
 out vec2 _texture;
 

@@ -1,7 +1,5 @@
 package opengl.game.model;
 
-import static java.util.Objects.requireNonNull;
-
 import opengl.game.texture.Texture;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
@@ -10,8 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -21,40 +17,51 @@ public final class Model implements Closeable {
 
     private final int id;
     @Nonnull
+    private final Obj obj;
+    /*
+    @Nonnull
     private final ModelType modelType;
     @Nonnull
     private final IndexBuffer indexBuffer;
     @Nonnull
     private final Map<AttributeType, AttributeBuffer> attributeBuffers;
+    */
 
     @Nullable
     private final Texture texture;
 
-    private Model(
-            @Nonnull final ModelType modelType, @Nonnull final IndexBuffer indexBuffer,
-            @Nonnull final Map<AttributeType, AttributeBuffer> attributeBuffers, @Nullable final Texture texture) {
-        this.modelType = modelType;
-        this.indexBuffer = indexBuffer;
-        this.attributeBuffers = attributeBuffers;
+    public Model(@Nonnull final ModelType modelType, @Nullable final Texture texture) {
+        this.obj = new Obj(modelType);
+        //this.modelType = modelType;
+        //this.indexBuffer = indexBuffer;
+        //this.attributeBuffers = attributeBuffers;
         this.texture = texture;
         id = GL30.glGenVertexArrays();
     }
 
     public void bind() {
         GL30.glBindVertexArray(id);
-        indexBuffer.bind();
-        attributeBuffers.values().forEach(AttributeBuffer::bind);
+        obj.getIndexBuffer().bind();
+        obj.getAttributeBuffers().values().forEach(AttributeBuffer::bind);
     }
 
     public void render() {
-        attributeBuffers.keySet().forEach(attributeType -> GL20.glEnableVertexAttribArray(attributeType.getIndex()));
+        obj.getAttributeBuffers().keySet()
+                .forEach(attributeType -> GL20.glEnableVertexAttribArray(attributeType.getIndex()));
         if (texture != null) {
             texture.activate();
         }
-        GL11.glDrawElements(GL11.GL_TRIANGLES, indexBuffer.getCount(), GL11.GL_UNSIGNED_INT, 0);
-        attributeBuffers.keySet().forEach(attributeType -> GL20.glDisableVertexAttribArray(attributeType.getIndex()));
+        GL11.glDrawElements(GL11.GL_TRIANGLES, obj.getIndexBuffer().getCount(), GL11.GL_UNSIGNED_INT, 0);
+        obj.getAttributeBuffers().keySet()
+                .forEach(attributeType -> GL20.glDisableVertexAttribArray(attributeType.getIndex()));
     }
 
+    @Nonnull
+    public Obj getObj() {
+        return obj;
+    }
+
+    /*
     @Nonnull
     public ModelType getModelType() {
         return modelType;
@@ -69,6 +76,7 @@ public final class Model implements Closeable {
     public Map<AttributeType, AttributeBuffer> getAttributeBuffers() {
         return attributeBuffers;
     }
+    */
 
     @Nullable
     public Texture getTexture() {
@@ -77,51 +85,9 @@ public final class Model implements Closeable {
 
     @Override
     public void close() {
-        indexBuffer.close();
-        attributeBuffers.values().forEach(AttributeBuffer::close);
+        obj.getIndexBuffer().close();
+        obj.getAttributeBuffers().values().forEach(AttributeBuffer::close);
         GL30.glBindVertexArray(0);
         GL30.glDeleteVertexArrays(id);
-    }
-
-    public static class Builder {
-        @Nullable
-        private ModelType modelType;
-        @Nullable
-        private IndexBuffer indexBuffer;
-        @Nonnull
-        private final Map<AttributeType, AttributeBuffer> attributeBuffers = new HashMap<>();
-        @Nullable
-        private Texture texture;
-
-        @Nonnull
-        public Builder withModelType(@Nonnull final ModelType modelType) {
-            this.modelType = modelType;
-            return this;
-        }
-
-        @Nonnull
-        public Builder withIndexBuffer(@Nonnull final IndexBuffer indexBuffer) {
-            this.indexBuffer = indexBuffer;
-            return this;
-        }
-
-        @Nonnull
-        public Builder withAttributeBuffer(@Nonnull final AttributeBuffer attributeBuffer) {
-            attributeBuffers.put(attributeBuffer.getAttributeType(), attributeBuffer);
-            return this;
-        }
-
-        @Nonnull
-        public Builder withTexture(@Nonnull final Texture texture) {
-            this.texture = texture;
-            return this;
-        }
-
-        @Nonnull
-        public Model build() {
-            requireNonNull(modelType, "A model type must be provided.");
-            requireNonNull(indexBuffer, "An index buffer must be provided.");
-            return new Model(modelType, indexBuffer, attributeBuffers, texture);
-        }
     }
 }

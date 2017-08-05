@@ -5,7 +5,9 @@ import org.lwjgl.opengl.GL13;
 import javax.annotation.Nonnull;
 
 public enum TextureType {
-    TEXTURE(GL13.GL_TEXTURE0, "texture/texture.png");
+    STALL_TEXTURE(GL13.GL_TEXTURE0, "texture/stall.png"),
+    //EXAMPLE_TEXTURE(GL13.GL_TEXTURE1, "texture/example.png"),
+    ;
 
     private final int index;
     @Nonnull

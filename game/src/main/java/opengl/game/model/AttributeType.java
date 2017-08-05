@@ -5,8 +5,9 @@ import org.lwjgl.opengl.GL15;
 import javax.annotation.Nonnull;
 
 public enum AttributeType {
-    VERTEX(0, GL15.GL_ARRAY_BUFFER, GL15.GL_STATIC_DRAW, 3, "position"),
-    TEXTURE(1, GL15.GL_ARRAY_BUFFER, GL15.GL_STATIC_DRAW, 2, "texture");
+    VERTEX_ATTRIBUTE(0, GL15.GL_ARRAY_BUFFER, GL15.GL_STATIC_DRAW, 3, "position"),
+    TEXTURE_ATTRIBUTE(1, GL15.GL_ARRAY_BUFFER, GL15.GL_STATIC_DRAW, 2, "texture"),
+    NORMAL_ATTRIBUTE(2, GL15.GL_ARRAY_BUFFER, GL15.GL_STATIC_DRAW, 3, "normal");
 
     private final int index;
     private final int type;
