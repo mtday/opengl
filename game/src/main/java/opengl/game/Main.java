@@ -34,9 +34,34 @@ public class Main {
         final Program programStatic = new ProgramStatic(projection, camera);
         final TextureManager textureManager = new TextureManager();
 
-        final int[] indices = new int[] {0, 1, 3, 3, 1, 2};
-        final float[] vertices = new float[] {-0.5f, 0.5f, 0f, -0.5f, -0.5f, 0f, 0.5f, -0.5f, 0f, 0.5f, 0.5f, 0f};
-        final float[] textures = new float[] {0, 0, 0, 1, 1, 1, 1, 0};
+        final float[] vertices = {
+                -0.5f,0.5f,-0.5f, -0.5f,-0.5f,-0.5f, 0.5f,-0.5f,-0.5f, 0.5f,0.5f,-0.5f,
+                -0.5f,0.5f,0.5f, -0.5f,-0.5f,0.5f, 0.5f,-0.5f,0.5f, 0.5f,0.5f,0.5f,
+                0.5f,0.5f,-0.5f, 0.5f,-0.5f,-0.5f, 0.5f,-0.5f,0.5f, 0.5f,0.5f,0.5f,
+                -0.5f,0.5f,-0.5f, -0.5f,-0.5f,-0.5f, -0.5f,-0.5f,0.5f, -0.5f,0.5f,0.5f,
+                -0.5f,0.5f,0.5f, -0.5f,0.5f,-0.5f, 0.5f,0.5f,-0.5f, 0.5f,0.5f,0.5f,
+                -0.5f,-0.5f,0.5f, -0.5f,-0.5f,-0.5f, 0.5f,-0.5f,-0.5f, 0.5f,-0.5f,0.5f
+        };
+
+        final float[] textures = {
+                0,0, 0,1, 1,1, 1,0, 0,0, 0,1, 1,1, 1,0, 0,0, 0,1, 1,1, 1,0, 0,0, 0,1, 1,1,
+                1,0, 0,0, 0,1, 1,1, 1,0, 0,0, 0,1, 1,1, 1,0
+        };
+
+        int[] indices = {
+                0,1,3,
+                3,1,2,
+                4,5,7,
+                7,5,6,
+                8,9,11,
+                11,9,10,
+                12,13,15,
+                15,13,14,
+                16,17,19,
+                19,17,18,
+                20,21,23,
+                23,21,22
+        };
 
         final Model model = new Model.Builder()
                 .withModelType(ModelType.TYPE)
@@ -45,12 +70,13 @@ public class Main {
                 .withAttributeBuffer(new AttributeBuffer(TEXTURE, textures))
                 .withTexture(textureManager.getTexture(TextureType.TEXTURE)).build();
 
-        final Entity entity = new Entity(model, new Matrix4f().identity().translate(0f, 0f, -0.5f));
+        final Entity entity = new Entity(model, new Matrix4f().identity().translate(0f, 0f, -5f));
 
         new GameLoop().run(now -> {
             window.clear();
             programStatic.start();
 
+            entity.getTransformation().rotate((float) Math.toRadians(1), 1, 1, 0);
             programStatic.getUniformManager().loadTransformationMatrix(entity);
 
             entity.bind();
