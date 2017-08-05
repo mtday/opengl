@@ -25,21 +25,16 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-public class Obj {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Obj.class);
+public class ObjLoader {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ObjLoader.class);
 
-    @Nonnull
-    private final IndexBuffer indexBuffer;
-    @Nonnull
-    private final Map<AttributeType, AttributeBuffer> attributeBuffers;
-
-    public Obj(@Nonnull final ModelType modelType) {
+    public static Model load(@Nonnull final ModelType modelType) {
         final List<Vector3f> vertexVectors = new ArrayList<>();
         final List<Vector2f> textureVectors = new ArrayList<>();
         final List<Vector3f> normalVectors = new ArrayList<>();
         final List<Vector3i> faceVectors = new ArrayList<>();
 
-        try (final InputStream inputStream = Obj.class.getClassLoader().getResourceAsStream(modelType.getResource());
+        try (final InputStream inputStream = ObjLoader.class.getClassLoader().getResourceAsStream(modelType.getResource());
              final InputStreamReader inputStreamReader = new InputStreamReader(inputStream, UTF_8);
              final BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
             String line;
@@ -89,43 +84,34 @@ public class Obj {
             normals[face.x * 3 + 2] = normal.z;
         }
 
-        indexBuffer = new IndexBuffer(indices.stream().mapToInt(i -> i).toArray());
-        attributeBuffers = new HashMap<>(3);
+        final IndexBuffer indexBuffer = new IndexBuffer(indices.stream().mapToInt(i -> i).toArray());
+        final Map<AttributeType, AttributeBuffer> attributeBuffers = new HashMap<>(3);
         attributeBuffers.put(VERTEX_ATTRIBUTE, new AttributeBuffer(VERTEX_ATTRIBUTE, vertices));
         attributeBuffers.put(TEXTURE_ATTRIBUTE, new AttributeBuffer(TEXTURE_ATTRIBUTE, textures));
         attributeBuffers.put(NORMAL_ATTRIBUTE, new AttributeBuffer(NORMAL_ATTRIBUTE, normals));
+        return new Model(indexBuffer, attributeBuffers);
     }
 
     @Nonnull
-    public IndexBuffer getIndexBuffer() {
-        return indexBuffer;
-    }
-
-    @Nonnull
-    public Map<AttributeType, AttributeBuffer> getAttributeBuffers() {
-        return attributeBuffers;
-    }
-
-    @Nonnull
-    private Vector3f parse3f(@Nonnull final String line) {
+    private static Vector3f parse3f(@Nonnull final String line) {
         final String[] parts = line.split(" ");
         return new Vector3f(parseFloat(parts[1]), parseFloat(parts[2]), parseFloat(parts[3]));
     }
 
     @Nonnull
-    private Vector2f parse2f(@Nonnull final String line) {
+    private static Vector2f parse2f(@Nonnull final String line) {
         final String[] parts = line.split(" ");
         return new Vector2f(parseFloat(parts[1]), parseFloat(parts[2]));
     }
 
     @Nonnull
-    private List<Vector3i> parseTriple3i(@Nonnull final String line) {
+    private static List<Vector3i> parseTriple3i(@Nonnull final String line) {
         final String[] parts = line.split(" ");
         return asList(parse3i(parts[1]), parse3i(parts[2]), parse3i(parts[3]));
     }
 
     @Nonnull
-    private Vector3i parse3i(@Nonnull final String part) {
+    private static Vector3i parse3i(@Nonnull final String part) {
         final String[] parts = part.split("/");
         return new Vector3i(parseInt(parts[0]) - 1, parseInt(parts[1]) - 1, parseInt(parts[2]) - 1);
     }

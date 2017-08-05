@@ -7,6 +7,7 @@ import static opengl.game.model.AttributeType.VERTEX_ATTRIBUTE;
 import static opengl.game.shader.ShaderType.FRAGMENT_SHADER;
 import static opengl.game.shader.ShaderType.VERTEX_SHADER;
 
+import opengl.game.entity.EntityManager;
 import opengl.game.model.AttributeType;
 
 import java.util.List;
@@ -19,7 +20,8 @@ public class ProgramStatic extends Program {
             asList(VERTEX_ATTRIBUTE, TEXTURE_ATTRIBUTE, NORMAL_ATTRIBUTE);
 
     public ProgramStatic(
-            @Nonnull final Projection projection, @Nonnull final Camera camera, @Nonnull final Light light) {
-        super(projection, camera, light, SHADER_TYPES, ATTRIBUTE_TYPES);
+            @Nonnull final EntityManager entityManager, @Nonnull final Projection projection,
+            @Nonnull final Camera camera, @Nonnull final Light light) {
+        super(entityManager, projection, camera, light, SHADER_TYPES, ATTRIBUTE_TYPES);
     }
 }

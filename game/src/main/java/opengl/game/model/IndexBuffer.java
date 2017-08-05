@@ -5,12 +5,11 @@ import org.lwjgl.opengl.GL15;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Closeable;
 import java.nio.IntBuffer;
 
 import javax.annotation.Nonnull;
 
-public class IndexBuffer implements Closeable {
+public class IndexBuffer {
     private static final Logger LOGGER = LoggerFactory.getLogger(IndexBuffer.class);
 
     private final int id;
@@ -49,12 +48,14 @@ public class IndexBuffer implements Closeable {
         return buffer;
     }
 
-    public void bind() {
+    public void start() {
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, id);
         GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
     }
 
-    @Override
+    public void stop() {
+    }
+
     public void close() {
         GL15.glDeleteBuffers(id);
     }

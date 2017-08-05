@@ -5,12 +5,11 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 
-import java.io.Closeable;
 import java.nio.FloatBuffer;
 
 import javax.annotation.Nonnull;
 
-public class AttributeBuffer implements Closeable {
+public class AttributeBuffer {
     private final int id;
     @Nonnull
     private final AttributeType attributeType;
@@ -51,14 +50,18 @@ public class AttributeBuffer implements Closeable {
         return count;
     }
 
-    public void bind() {
+    public void start() {
         GL15.glBindBuffer(attributeType.getType(), id);
         GL15.glBufferData(attributeType.getType(), buffer, attributeType.getUsage());
         GL20.glVertexAttribPointer(attributeType.getIndex(), attributeType.getSize(), GL11.GL_FLOAT, false, 0, 0);
         GL15.glBindBuffer(attributeType.getType(), 0);
+        GL20.glEnableVertexAttribArray(attributeType.getIndex());
     }
 
-    @Override
+    public void stop() {
+        GL20.glDisableVertexAttribArray(attributeType.getIndex());
+    }
+
     public void close() {
         GL15.glDeleteBuffers(id);
     }

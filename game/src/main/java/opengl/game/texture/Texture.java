@@ -68,4 +68,7 @@ public class Texture {
     public void activate() {
         GL13.glActiveTexture(textureType.getIndex());
     }
+
+    public void close() {
+    }
 }

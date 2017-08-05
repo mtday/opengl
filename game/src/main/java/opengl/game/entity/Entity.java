@@ -1,43 +1,40 @@
 package opengl.game.entity;
 
-import opengl.game.model.Model;
+import opengl.game.model.ModelType;
+import opengl.game.texture.TextureType;
 import org.joml.Matrix4f;
-
-import java.io.Closeable;
 
 import javax.annotation.Nonnull;
 
-public class Entity implements Closeable {
+public class Entity {
     @Nonnull
-    private final Model model;
+    private final ModelType modelType;
+    @Nonnull
+    private final TextureType textureType;
+
     @Nonnull
     private final Matrix4f transformation;
 
     public Entity(
-            @Nonnull final Model model, @Nonnull final Matrix4f transformation) {
-        this.model = model;
+            @Nonnull final ModelType modelType, @Nonnull final TextureType textureType,
+            @Nonnull final Matrix4f transformation) {
+        this.modelType = modelType;
+        this.textureType = textureType;
         this.transformation = transformation;
     }
 
     @Nonnull
-    public Model getModel() {
-        return model;
+    public ModelType getModelType() {
+        return modelType;
+    }
+
+    @Nonnull
+    public TextureType getTextureType() {
+        return textureType;
     }
 
     @Nonnull
     public Matrix4f getTransformation() {
         return transformation;
-    }
-
-    public void bind() {
-        model.bind();
-    }
-
-    public void render() {
-        model.render();
-    }
-
-    @Override
-    public void close() {
     }
 }

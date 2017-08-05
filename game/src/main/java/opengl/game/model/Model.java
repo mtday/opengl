@@ -1,93 +1,50 @@
 package opengl.game.model;
 
-import opengl.game.texture.Texture;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Closeable;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-public final class Model implements Closeable {
+public final class Model {
     private static final Logger LOGGER = LoggerFactory.getLogger(Model.class);
 
     private final int id;
     @Nonnull
-    private final Obj obj;
-    /*
-    @Nonnull
-    private final ModelType modelType;
-    @Nonnull
     private final IndexBuffer indexBuffer;
     @Nonnull
     private final Map<AttributeType, AttributeBuffer> attributeBuffers;
-    */
 
-    @Nullable
-    private final Texture texture;
-
-    public Model(@Nonnull final ModelType modelType, @Nullable final Texture texture) {
-        this.obj = new Obj(modelType);
-        //this.modelType = modelType;
-        //this.indexBuffer = indexBuffer;
-        //this.attributeBuffers = attributeBuffers;
-        this.texture = texture;
+    public Model(
+            @Nonnull final IndexBuffer indexBuffer,
+            @Nonnull final Map<AttributeType, AttributeBuffer> attributeBuffers) {
+        this.indexBuffer = indexBuffer;
+        this.attributeBuffers = attributeBuffers;
         id = GL30.glGenVertexArrays();
     }
 
-    public void bind() {
+    public void start() {
         GL30.glBindVertexArray(id);
-        obj.getIndexBuffer().bind();
-        obj.getAttributeBuffers().values().forEach(AttributeBuffer::bind);
+        indexBuffer.start();
+        attributeBuffers.values().forEach(AttributeBuffer::start);
     }
 
     public void render() {
-        obj.getAttributeBuffers().keySet()
-                .forEach(attributeType -> GL20.glEnableVertexAttribArray(attributeType.getIndex()));
-        if (texture != null) {
-            texture.activate();
-        }
-        GL11.glDrawElements(GL11.GL_TRIANGLES, obj.getIndexBuffer().getCount(), GL11.GL_UNSIGNED_INT, 0);
-        obj.getAttributeBuffers().keySet()
-                .forEach(attributeType -> GL20.glDisableVertexAttribArray(attributeType.getIndex()));
+        GL11.glDrawElements(GL11.GL_TRIANGLES, indexBuffer.getCount(), GL11.GL_UNSIGNED_INT, 0);
     }
 
-    @Nonnull
-    public Obj getObj() {
-        return obj;
-    }
-
-    /*
-    @Nonnull
-    public ModelType getModelType() {
-        return modelType;
-    }
-
-    @Nonnull
-    public IndexBuffer getIndexBuffer() {
-        return indexBuffer;
-    }
-
-    @Nonnull
-    public Map<AttributeType, AttributeBuffer> getAttributeBuffers() {
-        return attributeBuffers;
-    }
-    */
-
-    @Nullable
-    public Texture getTexture() {
-        return texture;
-    }
-
-    @Override
-    public void close() {
-        obj.getIndexBuffer().close();
-        obj.getAttributeBuffers().values().forEach(AttributeBuffer::close);
+    public void stop() {
+        indexBuffer.stop();
+        attributeBuffers.values().forEach(AttributeBuffer::stop);
         GL30.glBindVertexArray(0);
+    }
+
+    public void close() {
+        indexBuffer.close();
+        attributeBuffers.values().forEach(AttributeBuffer::close);
         GL30.glDeleteVertexArrays(id);
     }
 }

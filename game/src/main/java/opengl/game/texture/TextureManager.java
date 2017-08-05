@@ -20,4 +20,8 @@ public class TextureManager {
     public Texture getTexture(@Nonnull final TextureType textureType) {
         return textures.get(textureType);
     }
+
+    public void close() {
+        textures.values().forEach(Texture::close);
+    }
 }

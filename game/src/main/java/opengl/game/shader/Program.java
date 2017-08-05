@@ -1,9 +1,8 @@
 package opengl.game.shader;
 
-import static java.util.Optional.ofNullable;
-
+import opengl.game.entity.EntityManager;
 import opengl.game.model.AttributeType;
-import opengl.game.uniform.UniformManager;
+import opengl.game.render.Renderer;
 import org.lwjgl.opengl.GL20;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,71 +19,46 @@ public abstract class Program implements AutoCloseable {
     private final int id;
     @Nonnull
     private final Map<ShaderType, Shader> shaders;
-    @Nonnull
-    private final List<AttributeType> attributeTypes;
 
     @Nonnull
-    private final UniformManager uniformManager;
+    private final Renderer renderer;
 
     public Program(
-            @Nonnull final Projection projection, @Nonnull final Camera camera, @Nonnull final Light light,
-            @Nonnull final List<ShaderType> shaderTypes, @Nonnull final List<AttributeType> attributeTypes) {
+            @Nonnull final EntityManager entityManager, @Nonnull final Projection projection,
+            @Nonnull final Camera camera, @Nonnull final Light light, @Nonnull final List<ShaderType> shaderTypes,
+            @Nonnull final List<AttributeType> attributeTypes) {
         id = GL20.glCreateProgram();
 
-        this.shaders = new HashMap<>();
+        shaders = new HashMap<>();
         shaderTypes.stream().map(type -> new Shader(id, type))
                 .forEach(shader -> shaders.put(shader.getShaderType(), shader));
 
-        this.attributeTypes = attributeTypes;
-        attributeTypes.forEach(attributeType ->
-                GL20.glBindAttribLocation(id, attributeType.getIndex(), attributeType.getVariableName()));
+        attributeTypes.forEach(attributeType -> GL20
+                .glBindAttribLocation(id, attributeType.getIndex(), attributeType.getVariableName()));
 
         GL20.glLinkProgram(id);
         GL20.glValidateProgram(id);
 
-        uniformManager = new UniformManager(id, projection, camera, light);
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    @Nonnull
-    public Map<ShaderType, Shader> getShaders() {
-        return shaders;
-    }
-
-    @Nonnull
-    public Shader getShader(@Nonnull final ShaderType shaderType) {
-        return ofNullable(shaders.get(shaderType))
-                .orElseThrow(() -> new IllegalArgumentException("Shader type not found: " + shaderType));
-    }
-
-    @Nonnull
-    public List<AttributeType> getAttributeTypes() {
-        return attributeTypes;
-    }
-
-    @Nonnull
-    public UniformManager getUniformManager() {
-        return uniformManager;
+        renderer = new Renderer(id, entityManager, projection, camera, light);
     }
 
     public void start() {
         GL20.glUseProgram(id);
+        renderer.start();
+    }
 
-        uniformManager.loadViewMatrix();
-        uniformManager.loadLightPosition();
-        uniformManager.loadLightColor();
-        uniformManager.loadAmbientLight();
+    public void render() {
+        renderer.render();
     }
 
     public void stop() {
+        renderer.stop();
         GL20.glUseProgram(0);
     }
 
     @Override
     public void close() {
+        renderer.close();
         shaders.values().forEach(Shader::close);
         GL20.glDeleteProgram(id);
     }

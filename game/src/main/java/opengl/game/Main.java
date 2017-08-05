@@ -4,19 +4,20 @@ import static opengl.game.model.ModelType.DRAGON_MODEL;
 import static opengl.game.texture.TextureType.EXAMPLE_TEXTURE;
 
 import opengl.game.entity.Entity;
-import opengl.game.model.Model;
+import opengl.game.entity.EntityManager;
 import opengl.game.shader.Camera;
 import opengl.game.shader.Light;
 import opengl.game.shader.Program;
 import opengl.game.shader.ProgramStatic;
 import opengl.game.shader.Projection;
-import opengl.game.texture.TextureManager;
 import opengl.game.ui.KeyCallback;
 import opengl.game.ui.Window;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Random;
 
 import javax.annotation.Nullable;
 
@@ -25,36 +26,38 @@ public class Main {
 
     public static void run() {
         final Camera camera = new Camera();
-        final Light light = new Light(new Vector3f(0, 0, -15), new Vector3f(1, 1, 1), 0.2f);
         final KeyCallback keyCallback = new KeyCallback(camera);
         final Window window = new Window(keyCallback);
 
         final Projection projection = new Projection(window.getWidth(), window.getHeight());
-        final Program programStatic = new ProgramStatic(projection, camera, light);
-        final TextureManager textureManager = new TextureManager();
+        final Light light = new Light(new Vector3f(0, 0, -15), new Vector3f(1, 1, 1), 0.2f);
 
-        final Model model = new Model(DRAGON_MODEL, textureManager.getTexture(EXAMPLE_TEXTURE));
+        final EntityManager entityManager = new EntityManager();
+        final Program programStatic = new ProgramStatic(entityManager, projection, camera, light);
 
-        final Entity entity = new Entity(model, new Matrix4f().translate(0, -5f, -20f));
+        final Random random = new Random(1L);
+        for (int i = 0; i < 30; i++) {
+            final float tx = (random.nextFloat() * 100) - 50;
+            final float ty = (random.nextFloat() * 100) - 50;
+            final float tz = random.nextFloat() * -100 - 5;
+            final float r = (float) (random.nextFloat() * 2 * Math.PI);
+            entityManager.add(new Entity(DRAGON_MODEL, EXAMPLE_TEXTURE,
+                    new Matrix4f().translate(tx, ty, tz).rotate(r, 1, 1, 1)));
+        }
 
         new GameLoop().run(now -> {
             window.clear();
+
+            //entity.getTransformation().rotate((float) Math.toRadians(0.3), 0f, 1f, 0f);
+
             programStatic.start();
-
-            entity.getTransformation().rotate((float) Math.toRadians(1), 0, 1.5f, 0);
-            programStatic.getUniformManager().loadTransformationMatrix(entity);
-            programStatic.getUniformManager().loadShineDampener(entity.getModel().getTexture());
-            programStatic.getUniformManager().loadReflectivity(entity.getModel().getTexture());
-
-            entity.bind();
-            entity.render();
-
+            programStatic.render();
             programStatic.stop();
             window.update();
             return !window.shouldClose();
         });
 
-        entity.close();
+        programStatic.close();
     }
 
     public static void main(@Nullable final String... args) {

@@ -14,7 +14,7 @@ import opengl.game.entity.Entity;
 import opengl.game.shader.Camera;
 import opengl.game.shader.Light;
 import opengl.game.shader.Projection;
-import opengl.game.texture.Texture;
+import opengl.game.texture.TextureType;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
@@ -27,69 +27,40 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class UniformManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(UniformManager.class);
 
     @Nonnull
-    private final Projection projection;
-    @Nonnull
-    private final Camera camera;
-    @Nonnull
-    private final Light light;
-
-    @Nonnull
     private final Map<UniformType, Integer> locations;
 
-    public UniformManager(
-            final int programId, @Nonnull final Projection projection, @Nonnull final Camera camera,
-            @Nonnull final Light light) {
-        this.projection = projection;
-        this.camera = camera;
-        this.light = light;
-
+    public UniformManager(final int programId) {
         locations = new HashMap<>();
         stream(UniformType.values())
                 .forEach(type -> locations.put(type, GL20.glGetUniformLocation(programId, type.getVariableName())));
-
-        GL20.glUseProgram(programId);
-        loadProjectionMatrix();
-        GL20.glUseProgram(0);
     }
 
-    public void loadTransformationMatrix(@Nonnull final Entity entity) {
+    public void loadEntity(@Nonnull final Entity entity) {
         load(locations.get(TRANSFORMATION_MATRIX), entity.getTransformation());
     }
 
-    public void loadProjectionMatrix() {
+    public void loadProjection(@Nonnull final Projection projection) {
         load(locations.get(PROJECTION_MATRIX), projection.getProjection());
     }
 
-    public void loadViewMatrix() {
+    public void loadCamera(@Nonnull final Camera camera) {
         load(locations.get(VIEW_MATRIX), camera.getView());
     }
 
-    public void loadLightPosition() {
+    public void loadLight(@Nonnull final Light light) {
         load(locations.get(LIGHT_POSITION), light.getPosition());
-    }
-
-    public void loadLightColor() {
         load(locations.get(LIGHT_COLOR), light.getColor());
-    }
-
-    public void loadAmbientLight() {
         load(locations.get(AMBIENT_LIGHT), light.getAmbientLight());
     }
 
-    public void loadShineDampener(@Nullable final Texture texture) {
-        final float shineDampener = texture == null ? 1f : texture.getTextureType().getShineDampener();
-        load(locations.get(SHINE_DAMPENER), shineDampener);
-    }
-
-    public void loadReflectivity(@Nullable final Texture texture) {
-        final float reflectivity = texture == null ? 1f : texture.getTextureType().getReflectivity();
-        load(locations.get(REFLECTIVITY), reflectivity);
+    public void loadTexture(@Nonnull final TextureType textureType) {
+        load(locations.get(SHINE_DAMPENER), textureType.getShineDampener());
+        load(locations.get(REFLECTIVITY), textureType.getReflectivity());
     }
 
     private void load(final int location, @Nonnull final Matrix4f value) {
@@ -104,5 +75,8 @@ public class UniformManager {
 
     private void load(final int location, final float value) {
         GL20.glUniform1f(location, value);
+    }
+
+    public void close() {
     }
 }
