@@ -32,7 +32,7 @@ public class GameLoop {
             lastUpdateTime = now;
 
             // Update the frame count.
-            final int thisSecond = (int) (lastUpdateTime / 1000000000);
+            final int thisSecond = (int) (lastUpdateTime / 1_000_000_000);
             if (thisSecond > lastSecondTime) {
                 LOGGER.info("FPS: {}", frameCount);
                 frameCount = 0;

@@ -9,10 +9,12 @@ public class Light {
     private final Vector3f position;
     @Nonnull
     private final Vector3f color;
+    private final float ambientLight;
 
-    public Light(@Nonnull final Vector3f position, @Nonnull final Vector3f color) {
+    public Light(@Nonnull final Vector3f position, @Nonnull final Vector3f color, final float ambientLight) {
         this.position = position;
         this.color = color;
+        this.ambientLight = ambientLight;
     }
 
     @Nonnull
@@ -23,5 +25,9 @@ public class Light {
     @Nonnull
     public Vector3f getColor() {
         return color;
+    }
+
+    public float getAmbientLight() {
+        return ambientLight;
     }
 }

@@ -8,6 +8,9 @@ public enum UniformType {
     VIEW_MATRIX("viewMatrix"),
     LIGHT_POSITION("lightPosition"),
     LIGHT_COLOR("lightColor"),
+    AMBIENT_LIGHT("ambientLight"),
+    SHINE_DAMPENER("shineDampener"),
+    REFLECTIVITY("reflectivity"),
     ;
 
     @Nonnull

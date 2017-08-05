@@ -76,6 +76,7 @@ public abstract class Program implements AutoCloseable {
         uniformManager.loadViewMatrix();
         uniformManager.loadLightPosition();
         uniformManager.loadLightColor();
+        uniformManager.loadAmbientLight();
     }
 
     public void stop() {

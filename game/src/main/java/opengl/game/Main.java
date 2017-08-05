@@ -25,7 +25,7 @@ public class Main {
 
     public static void run() {
         final Camera camera = new Camera();
-        final Light light = new Light(new Vector3f(0, 0, -15), new Vector3f(1, 1, 1));
+        final Light light = new Light(new Vector3f(0, 0, -15), new Vector3f(1, 1, 1), 0.2f);
         final KeyCallback keyCallback = new KeyCallback(camera);
         final Window window = new Window(keyCallback);
 
@@ -35,7 +35,7 @@ public class Main {
 
         final Model model = new Model(DRAGON_MODEL, textureManager.getTexture(EXAMPLE_TEXTURE));
 
-        final Entity entity = new Entity(model, new Matrix4f().translate(0, 0, -20f));
+        final Entity entity = new Entity(model, new Matrix4f().translate(0, -5f, -20f));
 
         new GameLoop().run(now -> {
             window.clear();
@@ -43,6 +43,8 @@ public class Main {
 
             entity.getTransformation().rotate((float) Math.toRadians(1), 0, 1.5f, 0);
             programStatic.getUniformManager().loadTransformationMatrix(entity);
+            programStatic.getUniformManager().loadShineDampener(entity.getModel().getTexture());
+            programStatic.getUniformManager().loadReflectivity(entity.getModel().getTexture());
 
             entity.bind();
             entity.render();
