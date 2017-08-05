@@ -1,6 +1,7 @@
 package opengl.game.texture;
 
-import java.io.IOException;
+import static java.util.Arrays.stream;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,12 +11,9 @@ public class TextureManager implements AutoCloseable {
     @Nonnull
     private final Map<TextureType, Texture> textures;
 
-    public TextureManager() throws IOException {
+    public TextureManager() {
         textures = new HashMap<>();
-
-        for (final TextureType textureType : TextureType.values()) {
-            textures.put(textureType, new Texture(textureType));
-        }
+        stream(TextureType.values()).forEach(textureType -> textures.put(textureType, new Texture(textureType)));
     }
 
     @Nonnull
@@ -25,8 +23,5 @@ public class TextureManager implements AutoCloseable {
 
     @Override
     public void close() {
-        for (final Texture texture : textures.values()) {
-            texture.close();
-        }
     }
 }

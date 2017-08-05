@@ -44,15 +44,12 @@ public final class Model implements Closeable {
         GL30.glBindVertexArray(id);
         indexBuffer.bind();
         attributeBuffers.values().forEach(AttributeBuffer::bind);
-        if (texture != null) {
-            texture.bind();
-        }
     }
 
     public void render() {
         attributeBuffers.keySet().forEach(attributeType -> GL20.glEnableVertexAttribArray(attributeType.getIndex()));
         if (texture != null) {
-            texture.render();
+            texture.activate();
         }
         GL11.glDrawElements(GL11.GL_TRIANGLES, indexBuffer.getCount(), GL11.GL_UNSIGNED_INT, 0);
         attributeBuffers.keySet().forEach(attributeType -> GL20.glDisableVertexAttribArray(attributeType.getIndex()));
