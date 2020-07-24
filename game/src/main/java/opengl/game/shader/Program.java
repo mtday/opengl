@@ -4,29 +4,23 @@ import opengl.game.entity.EntityManager;
 import opengl.game.model.AttributeType;
 import opengl.game.render.Renderer;
 import org.lwjgl.opengl.GL20;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
-
 public abstract class Program implements AutoCloseable {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Program.class);
-
     private final int id;
-    @Nonnull
     private final Map<ShaderType, Shader> shaders;
 
-    @Nonnull
     private final Renderer renderer;
 
-    public Program(
-            @Nonnull final EntityManager entityManager, @Nonnull final Projection projection,
-            @Nonnull final Camera camera, @Nonnull final Light light, @Nonnull final List<ShaderType> shaderTypes,
-            @Nonnull final List<AttributeType> attributeTypes) {
+    public Program(EntityManager entityManager,
+                   Projection projection,
+                   Camera camera,
+                   Light light,
+                   List<ShaderType> shaderTypes,
+                   List<AttributeType> attributeTypes) {
         id = GL20.glCreateProgram();
 
         shaders = new HashMap<>();

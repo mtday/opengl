@@ -1,15 +1,12 @@
 package opengl.game.model;
 
-import static java.util.Arrays.stream;
-import static opengl.game.model.ObjLoader.load;
-
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
+import static java.util.Arrays.stream;
+import static opengl.game.model.ObjLoader.load;
 
 public class ModelManager {
-    @Nonnull
     private final Map<ModelType, Model> models;
 
     public ModelManager() {
@@ -17,8 +14,7 @@ public class ModelManager {
         stream(ModelType.values()).forEach(modelType -> models.put(modelType, load(modelType)));
     }
 
-    @Nonnull
-    public Model getModel(@Nonnull final ModelType modelType) {
+    public Model getModel(ModelType modelType) {
         return models.get(modelType);
     }
 

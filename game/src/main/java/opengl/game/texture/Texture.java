@@ -4,36 +4,29 @@ import opengl.game.util.PNGDecoder;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-import javax.annotation.Nonnull;
-
 public class Texture {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Texture.class);
-
     private final int id;
-    @Nonnull
     private final TextureType textureType;
 
-    Texture(@Nonnull final TextureType textureType) {
+    Texture(TextureType textureType) {
         this.textureType = textureType;
-        final String resource = textureType.getResource();
-        try (final InputStream inputStream = Texture.class.getClassLoader().getResourceAsStream(resource)) {
+        String resource = textureType.getResource();
+        try (InputStream inputStream = Texture.class.getClassLoader().getResourceAsStream(resource)) {
             if (inputStream == null) {
                 throw new RuntimeException("Texture " + textureType + " resource not found: " + resource);
             }
 
-            final PNGDecoder decoder = new PNGDecoder(inputStream);
-            final boolean hasAlpha = decoder.hasAlpha();
-            final int width = decoder.getWidth();
-            final int height = decoder.getHeight();
-            final PNGDecoder.Format format = hasAlpha ? PNGDecoder.Format.RGBA : PNGDecoder.Format.RGB;
-            final ByteBuffer buffer = ByteBuffer.allocateDirect(format.getNumComponents() * width * height);
+            PNGDecoder decoder = new PNGDecoder(inputStream);
+            boolean hasAlpha = decoder.hasAlpha();
+            int width = decoder.getWidth();
+            int height = decoder.getHeight();
+            PNGDecoder.Format format = hasAlpha ? PNGDecoder.Format.RGBA : PNGDecoder.Format.RGB;
+            ByteBuffer buffer = ByteBuffer.allocateDirect(format.getNumComponents() * width * height);
             decoder.decode(buffer, width * format.getNumComponents(), format);
             buffer.flip();
 
@@ -51,7 +44,7 @@ public class Texture {
             }
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
             GL11.glDeleteTextures(id);
-        } catch (final IOException ioException) {
+        } catch (IOException ioException) {
             throw new RuntimeException("Failed to load texture " + textureType, ioException);
         }
     }
@@ -60,7 +53,6 @@ public class Texture {
         return id;
     }
 
-    @Nonnull
     public TextureType getTextureType() {
         return textureType;
     }

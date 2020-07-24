@@ -5,15 +5,13 @@ import org.slf4j.LoggerFactory;
 
 import java.util.function.Function;
 
-import javax.annotation.Nonnull;
-
 public class GameLoop {
     private static final Logger LOGGER = LoggerFactory.getLogger(GameLoop.class);
 
     private static final double TARGET_FPS = 120;
     private static final double TARGET_TIME = 1_000_000_000 / TARGET_FPS;
 
-    public void run(@Nonnull final Function<Long, Boolean> function) {
+    public void run(Function<Long, Boolean> function) {
         // We will need the last update time.
         long lastUpdateTime = System.nanoTime();
 
@@ -32,7 +30,7 @@ public class GameLoop {
             lastUpdateTime = now;
 
             // Update the frame count.
-            final int thisSecond = (int) (lastUpdateTime / 1_000_000_000);
+            int thisSecond = (int) (lastUpdateTime / 1_000_000_000);
             if (thisSecond > lastSecondTime) {
                 LOGGER.info("FPS: {}", frameCount);
                 frameCount = 0;
@@ -45,7 +43,7 @@ public class GameLoop {
 
                 try {
                     Thread.sleep(1);
-                } catch (final InterruptedException interrupted) {
+                } catch (InterruptedException interrupted) {
                     // Ignored.
                 }
 

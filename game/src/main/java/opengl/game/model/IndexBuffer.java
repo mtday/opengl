@@ -2,28 +2,21 @@ package opengl.game.model;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL15;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.nio.IntBuffer;
 
-import javax.annotation.Nonnull;
-
 public class IndexBuffer {
-    private static final Logger LOGGER = LoggerFactory.getLogger(IndexBuffer.class);
-
     private final int id;
-    @Nonnull
     private final IntBuffer buffer;
     private final int count;
 
-    public IndexBuffer(@Nonnull final IntBuffer buffer) {
+    public IndexBuffer(IntBuffer buffer) {
         this.buffer = buffer;
         count = buffer.remaining();
         id = GL15.glGenBuffers();
     }
 
-    public IndexBuffer(@Nonnull final int[] array) {
+    public IndexBuffer(int[] array) {
         this(toBuffer(array));
     }
 
@@ -31,7 +24,6 @@ public class IndexBuffer {
         return id;
     }
 
-    @Nonnull
     public IntBuffer getBuffer() {
         return buffer;
     }
@@ -40,9 +32,8 @@ public class IndexBuffer {
         return count;
     }
 
-    @Nonnull
-    private static IntBuffer toBuffer(@Nonnull final int[] array) {
-        final IntBuffer buffer = BufferUtils.createIntBuffer(array.length);
+    private static IntBuffer toBuffer(int[] array) {
+        IntBuffer buffer = BufferUtils.createIntBuffer(array.length);
         buffer.put(array);
         buffer.flip();
         return buffer;

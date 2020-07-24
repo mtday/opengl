@@ -7,41 +7,34 @@ import org.lwjgl.opengl.GL20;
 
 import java.nio.FloatBuffer;
 
-import javax.annotation.Nonnull;
-
 public class AttributeBuffer {
     private final int id;
-    @Nonnull
     private final AttributeType attributeType;
-    @Nonnull
     private final FloatBuffer buffer;
     private final int count;
 
-    public AttributeBuffer(@Nonnull final AttributeType attributeType, @Nonnull final FloatBuffer buffer) {
+    public AttributeBuffer(AttributeType attributeType, FloatBuffer buffer) {
         this.attributeType = attributeType;
         this.buffer = buffer;
         count = buffer.remaining() / attributeType.getSize();
         id = GL15.glGenBuffers();
     }
 
-    public AttributeBuffer(@Nonnull final AttributeType attributeType, @Nonnull final float[] array) {
+    public AttributeBuffer(AttributeType attributeType, float[] array) {
         this(attributeType, toBuffer(array));
     }
 
-    @Nonnull
-    private static FloatBuffer toBuffer(@Nonnull final float[] array) {
-        final FloatBuffer buffer = BufferUtils.createFloatBuffer(array.length);
+    private static FloatBuffer toBuffer(float[] array) {
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(array.length);
         buffer.put(array);
         buffer.flip();
         return buffer;
     }
 
-    @Nonnull
     public AttributeType getAttributeType() {
         return attributeType;
     }
 
-    @Nonnull
     public FloatBuffer getBuffer() {
         return buffer;
     }

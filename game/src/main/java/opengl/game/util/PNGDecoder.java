@@ -30,8 +30,6 @@
 
 package opengl.game.util;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,10 +55,10 @@ public class PNGDecoder {
         BGRA(4, true),
         ABGR(4, true);
 
-        final int numComponents;
-        final boolean hasAlpha;
+        int numComponents;
+        boolean hasAlpha;
 
-        Format(final int numComponents, final boolean hasAlpha) {
+        Format(int numComponents, boolean hasAlpha) {
             this.numComponents = numComponents;
             this.hasAlpha = hasAlpha;
         }
@@ -561,7 +559,6 @@ public class PNGDecoder {
     }
 
     @SuppressWarnings("fallthrough")
-    @SuppressFBWarnings("SF_SWITCH_FALLTHROUGH")
     private void expand4(final byte[] src, final byte[] dst) {
         for (int i = 1, n = dst.length; i < n; i += 2) {
             final int val = src[1 + (i >> 1)] & 255;
@@ -575,7 +572,6 @@ public class PNGDecoder {
     }
 
     @SuppressWarnings("fallthrough")
-    @SuppressFBWarnings("SF_SWITCH_FALLTHROUGH")
     private void expand2(final byte[] src, final byte[] dst) {
         for (int i = 1, n = dst.length; i < n; i += 4) {
             final int val = src[1 + (i >> 2)] & 255;
@@ -593,7 +589,6 @@ public class PNGDecoder {
     }
 
     @SuppressWarnings("fallthrough")
-    @SuppressFBWarnings("SF_SWITCH_FALLTHROUGH")
     private void expand1(final byte[] src, final byte[] dst) {
         for (int i = 1, n = dst.length; i < n; i += 8) {
             final int val = src[1 + (i >> 3)] & 255;
@@ -652,7 +647,6 @@ public class PNGDecoder {
         }
     }
 
-    @SuppressFBWarnings("ICAST_QUESTIONABLE_UNSIGNED_RIGHT_SHIFT")
     private void unfilterAverage(final byte[] curLine, final byte[] prevLine) {
         final int bpp = this.bytesPerPixel;
 

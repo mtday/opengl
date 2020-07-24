@@ -1,37 +1,24 @@
 package opengl.game.ui;
 
-import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MAJOR;
-import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
-import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
-import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_CORE_PROFILE;
-import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_DEBUG_CONTEXT;
-import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_FORWARD_COMPAT;
-import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_PROFILE;
-import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
-import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
-import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
-
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
+import java.io.Closeable;
 
-public class Window implements AutoCloseable {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Window.class);
+import static org.lwjgl.glfw.GLFW.*;
 
+public class Window implements Closeable {
     private static final int WIDTH = 600;
     private static final int HEIGHT = 600;
     private static final String TITLE = "Game";
 
     private final long windowHandle;
 
-    public Window(@Nonnull final KeyCallback keyCallback) {
+    public Window(KeyCallback keyCallback) {
         // Create the error callback.
         GLFWErrorCallback.createPrint(System.err).set();
 

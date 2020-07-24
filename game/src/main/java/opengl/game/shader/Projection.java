@@ -2,21 +2,18 @@ package opengl.game.shader;
 
 import org.joml.Matrix4f;
 
-import javax.annotation.Nonnull;
-
 public class Projection {
     private static final float FOV = 70;
     private static final float NEAR_PLANE = 0.1f;
     private static final float FAR_PLANE = 1000f;
 
-    @Nonnull
     private final Matrix4f projection;
 
-    public Projection(final float width, final float height) {
-        final float aspectRatio = width / height;
-        final float yScale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))) * aspectRatio);
-        final float xScale = yScale / aspectRatio;
-        final float frustumLength = FAR_PLANE - NEAR_PLANE;
+    public Projection(float width, float height) {
+        float aspectRatio = width / height;
+        float yScale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))) * aspectRatio);
+        float xScale = yScale / aspectRatio;
+        float frustumLength = FAR_PLANE - NEAR_PLANE;
 
         projection = new Matrix4f();
         projection.m00(xScale);
@@ -27,7 +24,6 @@ public class Projection {
         projection.m33(0);
     }
 
-    @Nonnull
     public Matrix4f getProjection() {
         return projection;
     }

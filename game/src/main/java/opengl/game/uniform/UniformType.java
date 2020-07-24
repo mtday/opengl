@@ -1,7 +1,5 @@
 package opengl.game.uniform;
 
-import javax.annotation.Nonnull;
-
 public enum UniformType {
     TRANSFORMATION_MATRIX("transformationMatrix"),
     PROJECTION_MATRIX("projectionMatrix"),
@@ -13,14 +11,12 @@ public enum UniformType {
     REFLECTIVITY("reflectivity"),
     ;
 
-    @Nonnull
     private final String variableName;
 
-    UniformType(@Nonnull final String variableName) {
+    UniformType(String variableName) {
         this.variableName = variableName;
     }
 
-    @Nonnull
     public String getVariableName() {
         return variableName;
     }

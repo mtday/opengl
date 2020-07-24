@@ -7,20 +7,12 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-import javax.annotation.Nonnull;
-
 public final class Model {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Model.class);
-
     private final int id;
-    @Nonnull
     private final IndexBuffer indexBuffer;
-    @Nonnull
     private final Map<AttributeType, AttributeBuffer> attributeBuffers;
 
-    public Model(
-            @Nonnull final IndexBuffer indexBuffer,
-            @Nonnull final Map<AttributeType, AttributeBuffer> attributeBuffers) {
+    public Model(IndexBuffer indexBuffer, Map<AttributeType, AttributeBuffer> attributeBuffers) {
         this.indexBuffer = indexBuffer;
         this.attributeBuffers = attributeBuffers;
         id = GL30.glGenVertexArrays();
